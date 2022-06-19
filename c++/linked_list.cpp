@@ -1,11 +1,7 @@
 #include <cstdlib>
 #include <iostream>
-
-struct _Node
-{
-    int data;
-    struct Node *link;
-};
+#include <set>
+#include <vector>
 
 struct Node
 {
@@ -76,7 +72,7 @@ public:
             current = current->next;
         }
 
-        if (current->data == key)
+        if (current != NULL && current->data == key)
         {
             return true;
         }
@@ -132,11 +128,22 @@ void simulate_linked_list()
 
     linked_list->print_linked_list();
 
+//  inserting 10 nodes to the linked list
     std:: cout << "Inserting 10 nodes to the linked list" << std::endl;
+    std:: set<int> data_set;
+
+    std::set<int>::iterator set_index;
+    std::vector<int> data_vector;
+
+    while (data_set.size() < 10) {
+        data_set.insert(rand() % 100);
+    }
+
 //    insert 10 nodes with random numbers to the list
-    for(int index = 0; index < 10; index++)
+    for(set_index = data_set.begin(); set_index != data_set.end(); set_index++)
     {
-        linked_list->insert_node(rand()%10);
+        linked_list->insert_node(*set_index);
+        data_vector.push_back(*set_index);
     }
 
     linked_list->print_linked_list();
@@ -145,6 +152,34 @@ void simulate_linked_list()
     std:: cout << "Length of the linked list: " << linked_list->find_length() << std::endl;
 
 //    search for a node
+    int search_node_data_1 = data_vector[rand()%10];
+
+    std::cout << "Searching for node with value: " << search_node_data_1 << std::endl;
+    bool node_available = linked_list->search_node(search_node_data_1);
+
+    if (node_available)
+    {
+        std::cout << "Node Available" << std::endl;
+    }
+    else
+    {
+        std:: cout << "Node not found" << std:: endl;
+    }
+
+    int search_node_data_2 = 100 + rand() % 100;
+
+    std:: cout << "Searching for node: " << search_node_data_2 << " Status: " << linked_list->search_node(search_node_data_2)
+    << std::endl;
+
+//    deleting a node
+    int delete_node = data_vector[rand()%10];
+    std:: cout << "Deleting Node: " << delete_node << std::endl;
+    std:: cout << "Linked list before deletion" << std::endl;
+    linked_list->print_linked_list();
+
+    linked_list->delete_node(delete_node);
+    std:: cout << "Linked list after deletion" << std::endl;
+    linked_list->print_linked_list();
 
 }
 
