@@ -1,118 +1,101 @@
-#include <cstdlib>
-#include <iostream>
-#include <set>
-#include <vector>
 
-struct Node
+# include "../lib/linked_list.h"
+
+void LinkedList::insert_node(int data)
 {
-    int data;
-    Node *next;
-};
 
-class LinkedList
+    Node *temp = new Node();
+    temp->data = data;
+    temp->next = head;
+    head = temp;
+}
+
+void LinkedList::delete_node(int key)
 {
-public:
-    Node *head = NULL;
+    Node *temp = head;
+    Node *prev = NULL;
 
-    void insert_node(int data)
+    // if the head is the key
+    if (temp != NULL && temp->data == key)
     {
-        {
-            Node *temp = new Node();
-            temp->data = data;
-            temp->next = head;
-            head = temp;
-        }
-
+        head = temp->next;
+        delete temp;
+        return;
     }
 
-    void delete_node(int key)
+    else
     {
-        Node *temp = head;
-        Node *prev = NULL;
-
-        // if the head is the key
-        if (temp != NULL && temp->data == key)
+        // iterate until key is found
+        while((temp != NULL) && temp->data != key)
         {
-            head = temp->next;
-            delete temp;
+            prev = temp;
+            temp = temp->next;
+
+        }
+        // end of the list is met, key is not found
+        if (temp == NULL)
+        {
             return;
         }
-
-        else
-        {
-            // iterate until key is found
-            while((temp != NULL) && temp->data != key)
-            {
-                prev = temp;
-                temp = temp->next;
-
-            }
-             // end of the list is met, key is not found
-            if (temp == NULL)
-            {
-                return;
-            }
             // remove the node with the specific key
-            else
-            {
-                prev->next = temp->next;
-                delete temp;
-            }
-
-        }
-
-    }
-
-    bool search_node(int key)
-    {
-        Node *current = head;
-
-        while(current != NULL && current->data!= key)
-        {
-            current = current->next;
-        }
-
-        if (current != NULL && current->data == key)
-        {
-            return true;
-        }
         else
         {
-            return  false;
+            prev->next = temp->next;
+            delete temp;
         }
 
     }
+}
 
-    int find_length()
+bool LinkedList::search_node(int key)
+{
+    Node *current = head;
+
+    while(current != NULL && current->data!= key)
     {
-        if (head == NULL)
-        {
-            return 0;
-        }
-        Node *current = head;
-        int count = 0;
-
-        while(current != NULL)
-        {
-            count ++;
-            current = current->next;
-        }
-
-        return count;
+        current = current->next;
     }
 
-    void print_linked_list()
+    if (current != NULL && current->data == key)
     {
-        Node *node = head;
-
-        while (node != NULL)
-        {
-            std::cout << node->data << " ";
-            node = node->next;
-        }
-        std:: cout << std::endl;
+        return true;
     }
-};
+    else
+    {
+        return  false;
+    }
+
+}
+
+int LinkedList::find_length()
+{
+    if (head == NULL)
+    {
+        return 0;
+    }
+    Node *current = head;
+    int count = 0;
+
+    while(current != NULL)
+    {
+        count ++;
+        current = current->next;
+    }
+
+    return count;
+}
+
+void LinkedList::print_linked_list()
+{
+    Node *node = head;
+
+    while (node != NULL)
+    {
+        std::cout << node->data << " ";
+        node = node->next;
+    }
+    std:: cout << std::endl;
+}
 
 void simulate_linked_list()
 {
@@ -183,9 +166,3 @@ void simulate_linked_list()
 
 }
 
-
-int main()
-{
-    simulate_linked_list();
-    return 0;
-}
