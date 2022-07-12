@@ -30,6 +30,8 @@ public:
     tree_space::Node *root = nullptr;
 
     void insert(int value, tree_space::Node *node);
+    tree_space::Node* predecessor(tree_space::Node *node);
+    int count_nodes(tree_space::Node *node, int count);
     tree_space::Node *delete_node(tree_space::Node *root, int value);
     void print_tree(const std::string &prefix, const tree_space::Node *node, bool is_left);
 

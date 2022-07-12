@@ -44,6 +44,19 @@ void BinaryTree::insert(int value, tree_space::Node *node)
     }
 }
 
+tree_space::Node* BinaryTree::predecessor(tree_space::Node *node)
+{
+    tree_space::Node *temp = node;
+
+    while(node != nullptr)
+    {
+        temp = node;
+        node = node->right;
+    }
+
+    return temp;
+}
+
 tree_space::Node* BinaryTree::delete_node(tree_space::Node *root, int value)
 {
 
@@ -67,12 +80,42 @@ tree_space::Node* BinaryTree::delete_node(tree_space::Node *root, int value)
     {
         if (root->left == nullptr && root->left == nullptr)
         {
+//            free(root);
+            return nullptr;
+        }
+        else if (root->left != nullptr && root->right == nullptr)
+        {
+            tree_space::Node *temp = root->left;
+            free(root);
+            return temp;
 
         }
+        else if (root->left == nullptr && root->right != nullptr)
+        {
+            tree_space::Node *temp = root -> right;
+            free(root);
+            return temp;
+        }
+        else if (root->left != nullptr && root->right != nullptr)
+        {
+            tree_space::Node *min_val = predecessor(root->left);
+            root->data = min_val->data;
+            root->left = delete_node(root->left, min_val->data);
+        }
     }
+    return root;
+}
 
-//    if the node with value has only one child
-//    if the node with value has two children
+int BinaryTree::count_nodes(tree_space::Node *node, int count)
+{
+
+    if (node == nullptr)
+    {
+        return 0;
+    }
+    count += (1 + count_nodes(node->left, count) + count_nodes(node->right, count));
+
+    return count;
 }
 
 void BinaryTree::print_tree(const std::string &prefix, const tree_space::Node *node, bool is_left)
@@ -90,13 +133,12 @@ void BinaryTree::print_tree(const std::string &prefix, const tree_space::Node *n
 }
 
 void simulate_binary_tree() {
-    int TREE_NODES = 25;
+    int TREE_NODES = 15;
 //    create a root node
-    tree_space::Node *root = new tree_space::Node(10);
+    tree_space::Node *root = new tree_space::Node();
 
 //    create a binary tree
     BinaryTree *tree = new BinaryTree();
-    tree->root = root;
 
 //    create a set of nodes
     std::set<int> data_set;
@@ -113,17 +155,38 @@ void simulate_binary_tree() {
         data_vector.push_back(*set_index);
     }
 
+    root->data = data_vector[0];
+    tree->root = root;
 
     std::random_device rd;
     std::shuffle(data_vector.begin(), data_vector.end(), rd);
 
-    for (auto i = data_vector.begin(); i != data_vector.end(); i++) {
+    for (auto i = data_vector.begin() + 1; i != data_vector.end(); i++) {
         tree->insert(*i, root);
     }
 
     const std::string prefix = "";
 //    print the binary tree
-    tree->print_tree("", root, false);
+    std::cout << "Tree After Insertion" << std::endl;
+    tree->print_tree("", tree->root, false);
+
+//    counting nodes
+    std::cout << "Number of Nodes: " << tree->count_nodes(tree->root, 0)
+    << std:: endl;
+//    delete a node
+    int removing_index = 2;//rand() % TREE_NODES;
+    int removing_node = data_vector[removing_index];
+
+    std::cout << "Deleting node " << removing_node << std::endl;
+
+    tree->delete_node(tree->root, removing_node);
+
+    std:: cout << "Tree after deleting" << std::endl;
+    tree->print_tree("", tree->root, false);
+
+    std::cout << "Number of Nodes: " << tree->count_nodes(tree->root, 0)
+              << std:: endl;
+
 
 }
 
